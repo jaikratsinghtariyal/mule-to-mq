@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ibm-mq="http://www.mulesoft.org/schema/mule/ibm-mq" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ibm-mq http://www.mulesoft.org/schema/mule/ibm-mq/current/mule-ibm-mq.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="22db0342-deb6-4f20-b734-394578c64a3e" >
+		<http:listener-connection host="0.0.0.0" port="8089" />
+	</http:listener-config>
+	
+	<ibm-mq:config name="IBM_MQ_Config" doc:name="IBM MQ Config" doc:id="7e50ac18-01f9-406e-bac9-78b33999db1e" >
+		<ibm-mq:connection username="admin" password="passw0rd" >
+			<ibm-mq:connection-mode >
+				<ibm-mq:client host="0.0.0.0" port="1414" queueManager="QM1" channel="DEV.ADMIN.SVRCONN" />
+			</ibm-mq:connection-mode>
+		</ibm-mq:connection>
+	</ibm-mq:config>
+	
+	<flow name="mule-to-mqFlow" doc:id="a4fe8d29-8f27-4348-8974-1a5218e6982d" >
+		<http:listener doc:name="Listener" doc:id="a7582985-5839-4d1d-b433-657684947b0f" config-ref="HTTP_Listener_config" path="/"/>
+		<ibm-mq:publish doc:name="Publish" doc:id="96c8781a-fea4-463d-9b4c-c4dee75db706" config-ref="IBM_MQ_Config" destination="DEV.QUEUE.1" sendCorrelationId="ALWAYS">
+			<ibm-mq:message>
+				    <ibm-mq:body>#[%dw 2.0
+				   output application/json
+				   ---
+				   payload.payments
+				   ]</ibm-mq:body>
+			</ibm-mq:message>
+		</ibm-mq:publish>
+	</flow>
+</mule>
