@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/ibm-mq http://www.mulesoft.org/schema/mule/i
 	</ibm-mq:config>
 	
 	<flow name="mule-to-mqFlow" doc:id="a4fe8d29-8f27-4348-8974-1a5218e6982d" >
-		<http:listener doc:name="Listener" doc:id="a7582985-5839-4d1d-b433-657684947b0f" config-ref="HTTP_Listener_config" path="/"/>
+		<http:listener doc:name="Listener" doc:id="a7582985-5839-4d1d-b433-657684947b0f" config-ref="HTTP_Listener_config" path="/produce" allowedMethods="POST"/>
 		<ibm-mq:publish doc:name="Publish" doc:id="96c8781a-fea4-463d-9b4c-c4dee75db706" config-ref="IBM_MQ_Config" destination="DEV.QUEUE.1" sendCorrelationId="ALWAYS">
 			<ibm-mq:message>
 				    <ibm-mq:body>#[%dw 2.0
